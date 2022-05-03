@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v1/apps"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "uuid,contentid,appname"
+    myresults = f'{myheader}\n'
+    for myapp in results['apps']:
+        myuid = myapp['appDefinition']['uuid']
+        mycontentid = myapp['appDefinition']['contentId']
+        myname = myapp['appDefinition']['name']
+        myresults = myresults + f'{myuid},{mycontentid},{myname}\n'
+    return myresults

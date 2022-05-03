@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-Exaplanation: sumologic_list_objects is a general object retrieval script
+Exaplanation: sumologic_savecfg is a general object retrieval script
 
 Usage:
-   $ python  sumologic_list_objects [ options ]
+   $ python  sumologic_savecfg [ options ]
 
 Style:
    Google Python Style Guide:
@@ -49,7 +49,9 @@ TIMESTAMP = RIGHTNOW.strftime('%H%M%S')
 BASEDIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 BINDIR = os.path.abspath(os.path.join(BASEDIR, 'bin'))
+
 ETCDIR = os.path.abspath(os.path.join(BASEDIR, 'etc'))
+
 LIBDIR = os.path.abspath(os.path.join(BASEDIR, 'lib'))
 
 sys.path.append(LIBDIR)
@@ -59,7 +61,7 @@ JSONCFGTAG = 'sumologic_savecfg.json'
 MY_CFG = 'undefined'
 
 PARSER = argparse.ArgumentParser(description="""
-sumologic_list_objects is a general object retrieval script
+sumologic_savecfg is a general object retrieval script
 """)
 
 PARSER.add_argument("-a", metavar='<secret>', dest='MY_SECRET', \
@@ -181,30 +183,35 @@ def main():
 
     jsoncfgfile = os.path.join(ETCDIR, JSONCFGTAG)
 
-    with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
+    querylist = list()
 
+    with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
         cfgobject = json.load(fileobject)
 
-        for cfgkey in cfgobject:
+        if ARGS.QUERYNAME == 'all':
+            querylist = cfgobject.keys()
 
-            if ARGS.QUERYNAME in cfgobject or ARGS.QUERYNAME == 'all':
+        if ARGS.QUERYNAME in cfgobject:
+            querylist.append(ARGS.QUERYNAME)
 
-                module = importlib.import_module(cfgkey, package=None)
+        for queryname in querylist:
 
-                output = module.get_and_format_output(source)
+            module = importlib.import_module(queryname, package=None)
 
-                source_category = os.path.join(CATEGORYBASE,cfgkey)
+            output = module.get_and_format_output(source)
 
-                if ARGS.verbose > 4:
-                    print(f'SOURCE_CATEGORY: {source_category}\n')
+            source_category = os.path.join(CATEGORYBASE,queryname)
 
-                if ARGS.verbose > 8:
-                    print(f'QUERY_OUTPUT: {output}\n')
+            if ARGS.verbose > 4:
+                print(f'SOURCE_CATEGORY: {source_category}\n')
 
-                time.sleep(MY_SLEEP)
+            if ARGS.verbose > 8:
+                print(f'QUERY_OUTPUT:\n{output}')
 
+            if ARGS.SOURCEURL:
+                publish_data(output,ARGS.SOURCEURL,source_category)
 
-
+            time.sleep(MY_SLEEP)
 
 ### script logic  ###
 ### class ###
