@@ -33,7 +33,10 @@ import importlib
 import json
 import http
 import requests
+
 sys.dont_write_bytecode = 1
+
+MY_SLEEP = .5
 
 RIGHTNOW = datetime.datetime.now()
 
@@ -60,18 +63,47 @@ sumologic_list_objects is a general object retrieval script
 PARSER.add_argument("-a", metavar='<secret>', dest='MY_SECRET', \
                     help="set api (format: <key>:<secret>) ")
 
-PARSER.add_argument("-k", metavar='<client>', dest='MY_CLIENT', \
-                    help="set key (format: <site>_<orgid>) ")
-
 PARSER.add_argument("-c", metavar='<configfile>', dest='CONFIG', \
                     help="Specify config file")
-PARSER.add_argument("-m", metavar='<modulelist>', dest='MODULENAME', \
-                    default='all', help="Specify config file")
+
+PARSER.add_argument("-q", metavar='<modulelist>', dest='QUERYNAME', \
+                    default='all', help="Specify query to run")
+
+PARSER.add_argument("-u", metavar='<sumourl>', dest='SOURCEURL', \
+                    default='all', help="Specify Sumo Logic Source URL")
 
 PARSER.add_argument("-v", type=int, default=0, metavar='<verbose>', \
                     dest='verbose', help="increase verbosity")
 
 ARGS = PARSER.parse_args()
+
+def publish_data(payload,publishurl,publishcategory):
+    """
+    This publishes a file or string into Sumo Logic
+    """
+
+    session = requests.Session()
+
+    headers = dict()
+
+    headers['Content-Type'] = 'text/plain'
+    headers['Accept'] = 'text/plain'
+    headers['X-Sumo-Category'] = publishcategory
+    mimetype = "text/plain"
+
+    postresponse = session.post(publishurl, data=payload, headers=headers).status_code
+
+    if ARGS.verbose > 4:
+        print(f'SUMOLOGIC_ENDPOINT: {publishurl}')
+        print(f'SUMOLOGIC_CATEGORY: {publishcategory}')
+        print(f'SUMOLOGIC_RESPONSE: {postresponse}')
+
+    if ARGS.verbose > 6:
+        print(f'HTTPS_APPTYPE: {mimetype}')
+        print(f'HTTPS_HEADERS: {headers}')
+
+    if ARGS.verbose > 8:
+        print(f'HTTPS_PAYLOAD: {payload}')
 
 def resolve_option_variables():
     """
@@ -82,11 +114,6 @@ def resolve_option_variables():
         (keyname, keysecret) = ARGS.MY_SECRET.split(':')
         os.environ['SUMO_UID'] = keyname
         os.environ['SUMO_KEY'] = keysecret
-
-    if ARGS.MY_CLIENT:
-        (deployment, organizationid) = ARGS.MY_CLIENT.split('_')
-        os.environ['SUMO_LOC'] = deployment
-        os.environ['SUMO_ORG'] = organizationid
 
 def resolve_config_variables():
     """
@@ -139,9 +166,10 @@ def initialize_variables():
 
     return my_uid, my_key
 
+### script logic  ###
+
 ( sumo_uid, sumo_key ) = initialize_variables()
 
-### script logic  ###
 def main():
     """
     Setup the Sumo API connection, using the required tuple of region, id, and key.
@@ -157,15 +185,17 @@ def main():
 
         for cfgkey in cfgobject:
 
-            if ARGS.MODULENAME in cfgobject or ARGS.MODULENAME == 'all':
+            if ARGS.QUERYNAME in cfgobject or ARGS.QUERYNAME == 'all':
 
                 module = importlib.import_module(cfgkey, package=None)
 
                 output = module.get_and_format_output(source)
 
-                print(output)
+                if ARGS.verbose > 8:
+                    print(f'QUERY_OUTPUT: {output}\n')
 
-                time.sleep(3)
+                time.sleep(MY_SLEEP)
+
 
 
 
