@@ -38,6 +38,8 @@ sys.dont_write_bytecode = 1
 
 MY_SLEEP = .5
 
+CATEGORYBASE = 'sumologic/config'
+
 RIGHTNOW = datetime.datetime.now()
 
 DATESTAMP = RIGHTNOW.strftime('%Y%m%d')
@@ -190,6 +192,11 @@ def main():
                 module = importlib.import_module(cfgkey, package=None)
 
                 output = module.get_and_format_output(source)
+
+                source_category = os.path.join(CATEGORYBASE,cfgkey)
+
+                if ARGS.verbose > 4:
+                    print(f'SOURCE_CATEGORY: {source_category}\n')
 
                 if ARGS.verbose > 8:
                     print(f'QUERY_OUTPUT: {output}\n')
