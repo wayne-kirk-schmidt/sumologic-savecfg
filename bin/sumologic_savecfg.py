@@ -74,7 +74,7 @@ PARSER.add_argument("-q", metavar='<modulelist>', dest='QUERYNAME', \
                     default='all', help="Specify query to run")
 
 PARSER.add_argument("-u", metavar='<sumourl>', dest='SOURCEURL', \
-                    default='all', help="Specify Sumo Logic Source URL")
+                    help="Specify Sumo Logic Source URL")
 
 PARSER.add_argument("-v", type=int, default=0, metavar='<verbose>', \
                     dest='verbose', help="increase verbosity")
@@ -188,30 +188,30 @@ def main():
     with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
         cfgobject = json.load(fileobject)
 
-        if ARGS.QUERYNAME == 'all':
-            querylist = cfgobject.keys()
-
+    if ARGS.QUERYNAME == 'all':
+        querylist = cfgobject.keys()
+    else:
         if ARGS.QUERYNAME in cfgobject:
             querylist.append(ARGS.QUERYNAME)
 
-        for queryname in querylist:
+    for queryname in querylist:
 
-            module = importlib.import_module(queryname, package=None)
+        module = importlib.import_module(queryname, package=None)
 
-            output = module.get_and_format_output(source)
+        output = module.get_and_format_output(source)
 
-            source_category = os.path.join(CATEGORYBASE,queryname)
+        source_category = os.path.join(CATEGORYBASE,queryname)
 
-            if ARGS.verbose > 4:
-                print(f'SOURCE_CATEGORY: {source_category}\n')
+        if ARGS.verbose > 4:
+            print(f'SOURCE_CATEGORY: {source_category}\n')
 
-            if ARGS.verbose > 8:
-                print(f'QUERY_OUTPUT:\n{output}')
+        if ARGS.verbose > 8:
+            print(f'QUERY_OUTPUT:\n{output}')
 
-            if ARGS.SOURCEURL:
-                publish_data(output,ARGS.SOURCEURL,source_category)
+        if ARGS.SOURCEURL:
+            publish_data(output,ARGS.SOURCEURL,source_category)
 
-            time.sleep(MY_SLEEP)
+        time.sleep(MY_SLEEP)
 
 ### script logic  ###
 ### class ###

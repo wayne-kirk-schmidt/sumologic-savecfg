@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v2/content/folders/personal"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,parentid,type,name"
+    myresults = f'{myheader}\n'
+    myuid = results['id']
+    myparentid = results['parentId']
+    mytype = results['itemType']
+    myname = results['name']
+    myresults = myresults + f'{myuid},{myparentid},{myname},{mytype}\n'
+    return myresults

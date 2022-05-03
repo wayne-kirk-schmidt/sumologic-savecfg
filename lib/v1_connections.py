@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v1/connections"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,type"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        mytype = myapp['type']
+        myname = myapp['name']
+        myresults = myresults + f'{myuid},{myname},{mytype}\n'
+    return myresults

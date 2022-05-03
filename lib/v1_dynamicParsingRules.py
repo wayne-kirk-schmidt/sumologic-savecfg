@@ -11,4 +11,12 @@ def get_and_format_output(self):
     urlpath="/v1/dynamicParsingRules"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,scope,enabled"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        myscope = myapp['scope']
+        myname = myapp['name']
+        mystate = myapp['enabled']
+        myresults = myresults + f'{myuid},{myname},{myscope},{mystate}\n'
+    return myresults

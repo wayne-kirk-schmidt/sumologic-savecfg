@@ -11,4 +11,13 @@ def get_and_format_output(self):
     urlpath="/v1/users"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,email,active,usemfa"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        myname = myapp['firstName'] + ' ' + myapp['lastName']
+        mymail = myapp['email']
+        myactive = myapp['isActive']
+        myusemfa = myapp['isMfaEnabled']
+        myresults = myresults + f'{myuid},{myname},{mymail},{myactive},{myusemfa}\n'
+    return myresults

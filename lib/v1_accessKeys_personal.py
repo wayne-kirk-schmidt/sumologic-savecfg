@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v1/accessKeys/personal"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,author"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        myname = myapp['label']
+        myauthor = myapp['createdBy']
+        myresults = myresults + f'{myuid},{myname},{myauthor}\n'
+    return myresults

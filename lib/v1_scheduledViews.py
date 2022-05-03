@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v1/scheduledViews"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,retention"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        myretention = myapp['retentionPeriod']
+        myname = myapp['indexName']
+        myresults = myresults + f'{myuid},{myname},{myretention}\n'
+    return myresults
