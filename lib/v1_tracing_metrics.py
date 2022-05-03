@@ -11,4 +11,10 @@ def get_and_format_output(self):
     urlpath="/v1/tracing/metrics"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "name,type"
+    myresults = f'{myheader}\n'
+    for myapp in results['metrics']:
+        myname = myapp['metric']
+        mytype = myapp['type']
+        myresults = myresults + f'{myname},{mytype}\n'
+    return myresults

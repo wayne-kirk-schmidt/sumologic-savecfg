@@ -11,4 +11,12 @@ def get_and_format_output(self):
     urlpath="/v1/tokens"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "id,name,type,status"
+    myresults = f'{myheader}\n'
+    for myapp in results['data']:
+        myuid = myapp['id']
+        mytype = myapp['type']
+        myname = myapp['name']
+        mystate = myapp['status']
+        myresults = myresults + f'{myuid},{myname},{mytype},{mystate}\n'
+    return myresults

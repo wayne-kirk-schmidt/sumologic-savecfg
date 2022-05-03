@@ -11,4 +11,10 @@ def get_and_format_output(self):
     urlpath="/v1/tracing/tracequery/fields"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "name,valuelisting"
+    myresults = f'{myheader}\n'
+    for myapp in results['fields']:
+        myname = myapp['field']
+        myvaluelisting = myapp['valueListing']
+        myresults = myresults + f'{myname},{myvaluelisting}\n'
+    return myresults
