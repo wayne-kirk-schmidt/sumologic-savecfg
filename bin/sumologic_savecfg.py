@@ -151,7 +151,7 @@ def main():
 
     jsoncfgfile = os.path.join(ETCDIR, JSONCFGTAG)
 
-    with open(jsoncfgfile, "r" ) as fileobject:
+    with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
 
         cfgobject = json.load(fileobject)
 
@@ -177,7 +177,7 @@ class SumoApiClient():
     The class includes the HTTP methods, cmdlets, and init methods
     """
 
-    def __init__(self, access_id, access_key, endpoint=None, cookieFile='cookies.txt'):
+    def __init__(self, access_id, access_key, endpoint=None, cookie_file='cookies.txt'):
         """
         Initializes the Sumo Logic object
         """
@@ -185,7 +185,7 @@ class SumoApiClient():
         self.session.auth = (access_id, access_key)
         self.session.headers = {'content-type': 'application/json', \
             'accept': 'application/json'}
-        cookiejar = http.cookiejar.FileCookieJar(cookieFile)
+        cookiejar = http.cookiejar.FileCookieJar(cookie_file)
         self.session.cookies = cookiejar
         if endpoint is None:
             self.apipoint = self._get_endpoint()
