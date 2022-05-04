@@ -10,5 +10,6 @@ def get_and_format_output(self):
     """
     urlpath="/v1/ingestBudgets"
     body = self.get(urlpath).text
-    results = json.loads(body)
-    return results
+    ### results = json.loads(body)
+    ### return results
+    return body

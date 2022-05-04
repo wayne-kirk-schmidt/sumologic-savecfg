@@ -11,4 +11,7 @@ def get_and_format_output(self):
     urlpath="/v1/account/accountOwner"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "userid"
+    myresults = f'{myheader}\n'
+    myresults = myresults + f'{results}\n'
+    return myresults

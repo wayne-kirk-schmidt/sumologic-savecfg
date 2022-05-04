@@ -11,4 +11,8 @@ def get_and_format_output(self):
     urlpath="/v1/account/status"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "accountkey,accountvalue"
+    myresults = f'{myheader}\n'
+    for mykey, myvalue in results.items():
+        myresults = myresults + f'{mykey},{myvalue}\n'
+    return myresults

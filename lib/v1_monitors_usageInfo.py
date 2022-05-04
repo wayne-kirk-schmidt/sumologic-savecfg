@@ -11,4 +11,11 @@ def get_and_format_output(self):
     urlpath="/v1/monitors/usageInfo"
     body = self.get(urlpath).text
     results = json.loads(body)
-    return results
+    myheader = "usagekey,usagevalue"
+    myresults = f'{myheader}\n'
+    for mytype in results:
+        montype = mytype['monitorType']
+        for mykey, myvalue in mytype.items():
+            mykey = f'{montype}-{mykey}'
+            myresults = myresults + f'{mykey},{myvalue}\n'
+    return myresults
