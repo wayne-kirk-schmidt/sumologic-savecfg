@@ -73,6 +73,9 @@ PARSER.add_argument("-c", metavar='<configfile>', dest='CONFIG', \
 PARSER.add_argument("-q", metavar='<modulelist>', dest='QUERYNAME', \
                     default='all', help="Specify query to run")
 
+PARSER.add_argument("-l", action='store_true', dest='LISTQUERY', \
+                    default=False, help="List all supported Sumo Logic Queries")
+
 PARSER.add_argument("-u", metavar='<sumourl>', dest='SOURCEURL', \
                     help="Specify Sumo Logic Source URL")
 
@@ -80,6 +83,27 @@ PARSER.add_argument("-v", type=int, default=0, metavar='<verbose>', \
                     dest='verbose', help="increase verbosity")
 
 ARGS = PARSER.parse_args()
+
+def list_queries():
+    """
+    List all of the registered Sumo Logic Queries
+    """
+
+    jsoncfgfile = os.path.join(ETCDIR, JSONCFGTAG)
+
+    padwidth = 60
+    padchar = ' '
+
+    with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
+        cfgobject = json.load(fileobject)
+
+        for qkey,qpath in cfgobject.items():
+            print(f'Query: {qkey :{padchar}<{padwidth}} URLPath: {qpath}')
+
+    sys.exit()
+       
+if ARGS.LISTQUERY == True:
+    list_queries()
 
 def publish_data(payload,publishurl,publishcategory):
     """

@@ -62,14 +62,22 @@ Scripts and Functions:
 
        publish the output of the script to a Sumo Logic source Category
 
+NOTE: This may take several minutes to get the indexing done. 
+
     5. ./bin/sumologic_savecfg.py -a <apikey>:<apisecret>
 
        specify the API key to use to connect to the Sumo Logic environment
+
+    6. ./bin/sumologic_savecfg.py -q <queryname>
+
+       specify the query to use. the default is run all of the queries
 
 Uncoming Features:
 ==================
 
 * Provide different output formats in addition to CSV and stdout
+
+* Provide a datestamp for all of the output
 
 License
 =======
