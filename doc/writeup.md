@@ -36,15 +36,15 @@ Our solution using "Sumo on Sumo", feeding Sumo Logic data about how people are 
 
 And, best of all, this can be done in several easy steps:
 
-+ Create a HTTPS collector using these (steps)[https://help.sumologic.com/03Send-Data/Hosted-Collectors].
+- Create a HTTPS collector using these [steps](https://help.sumologic.com/03Send-Data/Hosted-Collectors).
 
-+ Create a HTTPS source using these (steps)[https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors].
+- Create a HTTPS source using these [steps](https://help.sumologic.com/03Send-Data/Sources/02Sources-for-Hosted-Collectors).
 
-+ Set up an API key using these (steps)[https://help.sumologic.com/Manage/Security/Access-Keys].
+- Set up an API key using these [steps](https://help.sumologic.com/Manage/Security/Access-Keys).
 
-+ Set up the ingest script following the (readme)[../README.md].
+- Set up the ingest script following the [readme](../README.md).
 
-+ Run the script! Now you can check the source categories for the data you want to see.
+- Run the script! Now you can check the source categories for the data you want to see.
 
 Business Benefits
 =================
