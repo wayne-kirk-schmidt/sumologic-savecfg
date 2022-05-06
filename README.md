@@ -1,11 +1,18 @@
 Sumo Logic Save Configuration
 =============================
 
-For you Sumo Logic environment as code, you know you want to backup and restore content but what about confiiguration changes?
+For have Sumo Logic environment as code, you know you want to backup and restore content but what about configuration changes?
 
 We have just the thing; Sumo Logic integration to allow you to report and archive your key configuration items.
 
 And, in the spirit of "Sumo on Sumo" we can also publish the record of configuration changes into Sumo Logic to query.
+
+Business Case
+=============
+
+Curious what was the business goals we wanted to solve? 
+
+Please read on in our [writeup](doc/writeup.md)!
 
 Installing the Scripts
 =======================
