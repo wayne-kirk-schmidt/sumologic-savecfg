@@ -51,3 +51,11 @@ Business Benefits
 
 The result is we have the ability to track all of the configuration changes within your Sumo Logic environment from new users to deleted content to changed collectors. Armed with this information, you and other administrators of your Sumo Logic environment can target actions to help your business, communicating changes, sharing content, and other actions.
 
+Examples
+========
+
+![example1](config_by_categories.png)
+
+![example2](dashboard_by_folders.png)
+
+![example3](roles_by_rights.png)
