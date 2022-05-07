@@ -3,13 +3,18 @@ Retrieval for v1_serviceAllowlist_addresses
 """
 import sys
 import json
+import datetime
+RIGHTNOW = datetime.datetime.now()
+DATESTAMP = RIGHTNOW.strftime('%Y%m%d')
 sys.dont_write_bytecode = 1
+
 def get_and_format_output(self):
     """
     wrapper for HTTP get for: /v1/serviceAllowlist/addresses
     """
     urlpath="/v1/serviceAllowlist/addresses"
     body = self.get(urlpath).text
-    ### results = json.loads(body)
-    ### return results
-    return body
+    myheader = "date,results"
+    myresults = f'{myheader}\n'
+    myresults = myresults + f'{DATESTAMP},{str(body)}\n'
+    return myresults

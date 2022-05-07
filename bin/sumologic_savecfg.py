@@ -40,6 +40,10 @@ MY_SLEEP = .5
 
 CATEGORYBASE = 'sumologic/config'
 
+CACHEDIR = os.path.join('/tmp', CATEGORYBASE )
+
+os.makedirs(CACHEDIR, exist_ok=True)
+
 RIGHTNOW = datetime.datetime.now()
 
 DATESTAMP = RIGHTNOW.strftime('%Y%m%d')
@@ -76,7 +80,7 @@ PARSER.add_argument("-q", metavar='<modulelist>', dest='QUERYNAME', \
 PARSER.add_argument("-l", action='store_true', dest='LISTQUERY', \
                     default=False, help="List all supported Sumo Logic Queries")
 
-PARSER.add_argument("-u", metavar='<sumourl>', dest='SOURCEURL', \
+PARSER.add_argument("-u", metavar='<sumourl>', dest='SUMOURL', \
                     help="Specify Sumo Logic Source URL")
 
 PARSER.add_argument("-v", type=int, default=0, metavar='<verbose>', \
@@ -101,23 +105,26 @@ def list_queries():
             print(f'Query: {qkey :{padchar}<{padwidth}} URLPath: {qpath}')
 
     sys.exit()
-       
-if ARGS.LISTQUERY == True:
+
+if ARGS.LISTQUERY is True:
     list_queries()
 
-def publish_data(payload,publishurl,publishcategory):
+def publish_data(payload_file,publishurl,publishcategory):
     """
     This publishes a file or string into Sumo Logic
     """
 
     session = requests.Session()
 
-    headers = dict()
+    headers = {}
 
-    headers['Content-Type'] = 'text/plain'
-    headers['Accept'] = 'text/plain'
+    headers['Content-Type'] = 'text/csv'
+    headers['Accept'] = 'text/csv'
     headers['X-Sumo-Category'] = publishcategory
-    mimetype = "text/plain"
+    mimetype = 'text/csv'
+
+    with open(payload_file, "r", encoding='utf8' ) as payload_object:
+        payload = payload_object.read()
 
     postresponse = session.post(publishurl, data=payload, headers=headers).status_code
 
@@ -143,6 +150,9 @@ def resolve_option_variables():
         os.environ['SUMO_UID'] = keyname
         os.environ['SUMO_KEY'] = keysecret
 
+    if ARGS.SUMOURL:
+        os.environ['SUMO_URL'] = ARGS.SUMOURL
+
 def resolve_config_variables():
     """
     Validates and confirms all necessary variables for the script
@@ -158,23 +168,14 @@ def resolve_config_variables():
             print('Displaying Config Contents:')
             print(dict(configobj.items('Default')))
 
-        if configobj.has_option("Default", "SUMO_TAG"):
-            os.environ['SUMO_TAG'] = configobj.get("Default", "SUMO_TAG")
-
         if configobj.has_option("Default", "SUMO_UID"):
             os.environ['SUMO_UID'] = configobj.get("Default", "SUMO_UID")
 
         if configobj.has_option("Default", "SUMO_KEY"):
             os.environ['SUMO_KEY'] = configobj.get("Default", "SUMO_KEY")
 
-        if configobj.has_option("Default", "SUMO_LOC"):
-            os.environ['SUMO_LOC'] = configobj.get("Default", "SUMO_LOC")
-
-        if configobj.has_option("Default", "SUMO_END"):
-            os.environ['SUMO_END'] = configobj.get("Default", "SUMO_END")
-
-        if configobj.has_option("Default", "SUMO_ORG"):
-            os.environ['SUMO_ORG'] = configobj.get("Default", "SUMO_ORG")
+        if configobj.has_option("Default", "SUMO_URL"):
+            os.environ['SUMO_URL'] = configobj.get("Default", "SUMO_URL")
 
 def initialize_variables():
     """
@@ -207,7 +208,7 @@ def main():
 
     jsoncfgfile = os.path.join(ETCDIR, JSONCFGTAG)
 
-    querylist = list()
+    querylist = []
 
     with open(jsoncfgfile, "r", encoding='utf8' ) as fileobject:
         cfgobject = json.load(fileobject)
@@ -224,6 +225,11 @@ def main():
 
         output = module.get_and_format_output(source)
 
+        output_file = os.path.join(CACHEDIR, f'{queryname}.csv')
+
+        with open (output_file, "w", encoding='utf8') as output_object:
+            output_object.write(output)
+
         source_category = os.path.join(CATEGORYBASE,queryname)
 
         if ARGS.verbose > 4:
@@ -232,8 +238,8 @@ def main():
         if ARGS.verbose > 8:
             print(f'QUERY_OUTPUT:\n{output}')
 
-        if ARGS.SOURCEURL:
-            publish_data(output,ARGS.SOURCEURL,source_category)
+        if os.environ['SUMO_URL']:
+            publish_data(output_file,os.environ['SUMO_URL'],source_category)
 
         time.sleep(MY_SLEEP)
 

@@ -82,9 +82,7 @@ NOTE: This may take several minutes to get the indexing done.
 Uncoming Features:
 ==================
 
-* Provide different output formats in addition to CSV and stdout
-
-* Provide a datestamp for all of the output
+*    provide support for building indices
 
 License
 =======
