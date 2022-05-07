@@ -17,11 +17,11 @@ Please read on in our [writeup](doc/writeup.md)!
 Examples
 ========
 
-*    [example1](doc/config_by_categories.png =250x250)
+![example1](doc/config_by_categories.png =250x250)
 
-*    [example2](doc/dashboard_by_folders.png =250x250)
+![example2](doc/dashboard_by_folders.png =250x250)
 
-*    [example3](doc/roles_by]_rights.png =250x250)
+![example3](doc/roles_by]_rights.png =250x250)
 
 Installing the Scripts
 =======================
